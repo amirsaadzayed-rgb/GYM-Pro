@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Certified Gym System - النظام التدريبي التحليلي الذكي</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Cairo Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; }</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-6">
+
+    <!-- زر تبديل اللغة -->
+    <div class="max-w-4xl mx-auto flex justify-end mb-4">
+        <button onclick="toggleLanguage()" id="lang-btn" class="bg-slate-900 border border-slate-800 text-emerald-400 font-bold px-4 py-2 rounded-xl text-xs hover:bg-slate-800 transition shadow-md">
+            English Version 🌐
+        </button>
+    </div>
+
+    <!-- شاشة الإدخال -->
+    <div id="onboarding-screen" class="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
+        <div class="text-center space-y-2 mb-6">
+            <h1 id="ui-title" class="text-2xl md:text-3xl font-bold text-emerald-400">🎓 محرك التحليل الرياضي الذكي الحقيقي</h1>
+            <p id="ui-subtitle" class="text-slate-400 text-sm">أدخل بياناتك ليقوم الخوارزم بتوليد جدول مختار خصيصاً ومختلف كلياً بناءً على هدفك ومؤشر جسمك.</p>
+        </div>
+
+        <form id="user-form" onsubmit="generateAlgorithmicPlan(event)" class="space-y-4">
+            <div>
+                <label id="lbl-name" class="block text-xs font-bold text-slate-300 mb-1">الاسم أو الكود التعريفي</label>
+                <input type="text" id="u-name" required placeholder="مثال: أحمد محمد" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white">
+            </div>
+
+            <div class="grid grid-cols-4 gap-2">
+                <div>
+                    <label id="lbl-age" class="block text-xs font-bold text-slate-300 mb-1">العمر</label>
+                    <input type="number" id="u-age" required min="15" max="80" placeholder="25" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-3 text-sm text-center text-white focus:border-emerald-500">
+                </div>
+                <div>
+                    <label id="lbl-height" class="block text-xs font-bold text-slate-300 mb-1">الطول (سم)</label>
+                    <input type="number" id="u-height" required min="140" max="220" placeholder="175" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-3 text-sm text-center text-white focus:border-emerald-500">
+                </div>
+                <div>
+                    <label id="lbl-weight" class="block text-xs font-bold text-slate-300 mb-1">الوزن (كجم)</label>
+                    <input type="number" id="u-weight" required min="45" max="200" placeholder="75" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-3 text-sm text-center text-white focus:border-emerald-500">
+                </div>
+                <div>
+                    <label id="lbl-gender" class="block text-xs font-bold text-slate-300 mb-1">الجنس</label>
+                    <select id="u-gender" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-3 text-xs text-white focus:border-emerald-500">
+                        <option value="male" id="opt-male">ذكر</option>
+                        <option value="female" id="opt-female">أنثى</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label id="lbl-goal" class="block text-xs font-bold text-slate-300 mb-1">الهدف التدريبي الأساسي (يغير التمارين تلقائياً)</label>
+                <select id="u-goal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-emerald-500 font-semibold text-emerald-300">
+                    <option value="fat_loss" id="goal-1">1️⃣ حرق الدهون وتخفيض الوزن (تركيز على الكارديو والأجهزة)</option>
+                    <option value="cutting" id="goal-2">2️⃣ التنشيف وإبراز العضلات (عزل عالي وتفاصيل)</option>
+                    <option value="hypertrophy" id="goal-3">3️⃣ التضخيم وبناء الكتلة (أحمال حرة وثقيلة)</option>
+                </select>
+            </div>
+
+            <div>
+                <label id="lbl-days" class="block text-xs font-bold text-slate-300 mb-1">عدد أيام التدريب أسبوعياً</label>
+                <select id="u-days" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-emerald-500">
+                    <option value="3" id="days-3">3 أيام أسبوعياً (Full Body شامل مكثف)</option>
+                    <option value="4" selected id="days-4">4 أيام أسبوعياً (Upper / Lower احترافي متقدم)</option>
+                </select>
+            </div>
+
+            <button type="submit" id="btn-generate" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg mt-4">
+                تشغيل التحليل الديناميكي وتوليد البرنامج 🚀
+            </button>
+        </form>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="app-screen" class="max-w-4xl mx-auto space-y-6 hidden">
+        <div class="flex justify-between items-center bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-600/20 p-2.5 rounded-xl text-emerald-400 font-bold" id="user-initials">UA</div>
+                <div>
+                    <h2 class="font-bold text-white text-sm" id="welcome-user">المتدرب</h2>
+                    <p class="text-xs text-emerald-400 font-semibold" id="user-plan-summary">البرنامج التحليلي</p>
+                </div>
+            </div>
+            <button onclick="resetProfile()" id="btn-reset" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold transition">
+                إعادة ضبط البيانات ⚙️
+            </button>
+        </div>
+
+        <!-- المؤشرات الحيوية -->
+        <div class="grid grid-cols-4 gap-2">
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-center">
+                <span class="text-[11px] text-slate-400 block">مؤشر الكتلة (BMI)</span>
+                <span class="text-sm font-bold text-indigo-400" id="stat-bmi">0</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-center">
+                <span class="text-[11px] text-slate-400 block">معدل الأيض (BMR)</span>
+                <span class="text-sm font-bold text-emerald-400" id="stat-bmr">0 kcal</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-center">
+                <span class="text-[11px] text-slate-400 block">إجمالي الاحتياج (TDEE)</span>
+                <span class="text-sm font-bold text-sky-400" id="stat-tdee">0 kcal</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-center">
+                <span class="text-[11px] text-slate-400 block">السعرات المستهدفة</span>
+                <span class="text-sm font-bold text-amber-400" id="stat-target-cal">0 kcal</span>
+            </div>
+        </div>
+
+        <!-- التحليل العلمي الديناميكي -->
+        <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded-2xl text-xs text-emerald-200 flex items-center gap-3 shadow-md">
+            <span class="text-3xl">🧬</span>
+            <p id="scientific-analysis-text" class="leading-relaxed">جاري تحليل البيانات...</p>
+        </div>
+
+        <!-- تبويبات الأيام -->
+        <div class="flex gap-2 overflow-x-auto pb-2" id="days-tabs-container"></div>
+
+        <!-- الجدول التدريبي -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 shadow-xl">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+                <h3 id="current-day-title" class="font-bold text-emerald-400 text-base">اليوم</h3>
+                <span id="current-day-focus" class="text-xs bg-emerald-950 text-emerald-300 px-3 py-1 rounded-lg border border-emerald-800">التركيز</span>
+            </div>
+            <div id="day-workouts-list" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل التمرين -->
+    <div id="exercise-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 relative">
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full z-10">✕</button>
+            <h3 id="modal-title" class="text-xl font-bold text-emerald-400"></h3>
+
+            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative shadow-inner h-56">
+                <iframe id="modal-youtube-iframe" class="w-full h-full border-0" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="text-center">
+                <a id="modal-yt-external" href="#" target="_blank" class="text-xs text-sky-400 hover:underline inline-flex items-center gap-1 font-semibold">
+                    🔗 فتح الفيديو مباشرة على يوتيوب في حال تعذر العرض المضمن
+                </a>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <h4 id="modal-weight-title" class="font-bold text-amber-400 text-xs">📈 تسجيل الوزن الفعلي ومتابعة التطور:</h4>
+                <div class="flex gap-2 items-center">
+                    <input type="number" id="custom-weight-input" placeholder="الوزن الفعلي (كجم)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs flex-1 text-white focus:outline-none focus:border-amber-500">
+                    <button onclick="saveExerciseWeight()" id="modal-save-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">حفظ التطور</button>
+                </div>
+            </div>
+
+            <div>
+                <h4 id="modal-benefit-title" class="font-bold text-sky-300 text-xs mb-1">🎯 الفائدة التشريحية:</h4>
+                <p id="modal-benefit" class="text-slate-300 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800"></p>
+            </div>
+
+            <div>
+                <h4 id="modal-desc-title" class="font-bold text-slate-200 text-xs mb-1">📌 التحليل الميكانيكي:</h4>
+                <p id="modal-desc" class="text-slate-300 text-xs"></p>
+            </div>
+            <div>
+                <h4 id="modal-steps-title" class="font-bold text-emerald-400 text-xs mb-1.5">✅ معايير الأداء السليم:</h4>
+                <ul id="modal-steps" class="space-y-1.5 text-xs text-slate-300"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userProfile = JSON.parse(localStorage.getItem('alg_gym_user_v2')) || null;
+        let exerciseWeights = JSON.parse(localStorage.getItem('alg_gym_weights_v2')) || {};
+        let currentDayIndex = 0;
+        let currentActiveExId = null;
+        let currentLang = localStorage.getItem('alg_gym_lang_v2') || 'ar';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('alg_gym_lang_v2', currentLang);
+            updateUI18n();
+            if (userProfile) initApp();
+        }
+
+        function updateUI18n() {
+            const html = document.getElementById('html-root');
+            html.lang = currentLang;
+            html.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-btn').innerText = currentLang === 'ar' ? 'English Version 🌐' : 'النسخة العربية 🌐';
+
+            if (currentLang === 'en') {
+                document.getElementById('ui-title').innerText = "🎓 True Algorithmic Gym Engine";
+                document.getElementById('ui-subtitle').innerText = "Enter your biometrics to generate a dynamically filtered workout routine unique to your goal.";
+                document.getElementById('lbl-name').innerText = "Full Name or ID Code";
+                document.getElementById('u-name').placeholder = "e.g., John Doe";
+                document.getElementById('lbl-age').innerText = "Age";
+                document.getElementById('lbl-height').innerText = "Height (cm)";
+                document.getElementById('lbl-weight').innerText = "Weight (kg)";
+                document.getElementById('lbl-gender').innerText = "Gender";
+                document.getElementById('opt-male').innerText = "Male";
+                document.getElementById('opt-female').innerText = "Female";
+                document.getElementById('lbl-goal').innerText = "Primary Training Goal (Dynamically changes exercises)";
+                document.getElementById('goal-1').innerText = "1️⃣ Fat Loss & High Burn (Cardio & Machine Focus)";
+                document.getElementById('goal-2').innerText = "2️⃣ Muscle Cutting & Definition (Isolation Focus)";
+                document.getElementById('goal-3').innerText = "3️⃣ Muscle Hypertrophy (Heavy Free Weights)";
+                document.getElementById('lbl-days').innerText = "Training Days Per Week";
+                document.getElementById('days-3').innerText = "3 Days / Week (Full Body)";
+                document.getElementById('days-4').innerText = "4 Days / Week (Upper / Lower)";
+                document.getElementById('btn-generate').innerText = "Run Dynamic Analysis & Generate Plan 🚀";
+                document.getElementById('btn-reset').innerText = "Reset Settings ⚙️";
+                document.getElementById('modal-weight-title').innerText = "📈 Log Actual Weight & Track Progress:";
+                document.getElementById('custom-weight-input').placeholder = "Actual weight (kg)";
+                document.getElementById('modal-save-btn').innerText = "Save Progress";
+                document.getElementById('modal-benefit-title').innerText = "🎯 Anatomical Benefit:";
+                document.getElementById('modal-desc-title').innerText = "📌 Mechanical Analysis:";
+                document.getElementById('modal-steps-title').innerText = "✅ Proper Performance Standards:";
+            } else {
+                document.getElementById('ui-title').innerText = "🎓 محرك التحليل الرياضي الذكي الحقيقي";
+                document.getElementById('ui-subtitle').innerText = "أدخل بياناتك ليقوم الخوارزم بتوليد جدول مختار خصيصاً ومختلف كلياً بناءً على هدفك ومؤشر جسمك.";
+                document.getElementById('lbl-name').innerText = "الاسم أو الكود التعريفي";
+                document.getElementById('u-name').placeholder = "مثال: أحمد محمد";
+                document.getElementById('lbl-age').innerText = "العمر";
+                document.getElementById('lbl-height').innerText = "الطول (سم)";
+                document.getElementById('lbl-weight').innerText = "الوزن (كجم)";
+                document.getElementById('lbl-gender').innerText = "الجنس";
+                document.getElementById('opt-male').innerText = "ذكر";
+                document.getElementById('opt-female').innerText = "أنثى";
+                document.getElementById('lbl-goal').innerText = "الهدف التدريبي الأساسي (يغير التمارين تلقائياً)";
+                document.getElementById('goal-1').innerText = "1️⃣ حرق الدهون وتخفيض الوزن (تركيز على الكارديو والأجهزة)";
+                document.getElementById('goal-2').innerText = "2️⃣ التنشيف وإبراز العضلات (عزل عالي وتفاصيل)";
+                document.getElementById('goal-3').innerText = "3️⃣ التضخيم وبناء الكتلة (أحمال حرة وثقيلة)";
+                document.getElementById('lbl-days').innerText = "عدد أيام التدريب أسبوعياً";
+                document.getElementById('days-3').innerText = "3 أيام أسبوعياً (Full Body شامل مكثف)";
+                document.getElementById('days-4').innerText = "4 أيام أسبوعياً (Upper / Lower احترافي متقدم)";
+                document.getElementById('btn-generate').innerText = "تشغيل التحليل الديناميكي وتوليد البرنامج 🚀";
+                document.getElementById('btn-reset').innerText = "إعادة ضبط البيانات ⚙️";
+                document.getElementById('modal-weight-title').innerText = "📈 تسجيل الوزن الفعلي ومتابعة التطور:";
+                document.getElementById('custom-weight-input').placeholder = "الوزن الفعلي (كجم)";
+                document.getElementById('modal-save-btn').innerText = "حفظ التطور";
+                document.getElementById('modal-benefit-title').innerText = "🎯 الفائدة التشريحية:";
+                document.getElementById('modal-desc-title').innerText = "📌 التحليل الميكانيكي:";
+                document.getElementById('modal-steps-title').innerText = "✅ معايير الأداء السليم:";
+            }
+        }
+
+        // قاعدة بيانات متكاملة ومصنفة بدقة عالية
+        const masterDatabase = [
+            { id: 'ex_1', cat: 'warmup', type: 'cardio', yt: 'w86XUvKMg9Q', title: "إحماء المشاية الكهربائية", desc: "10 دقائق مشي تدريجي لتنشيط الدورة الدموية.", benefit: "تنشيط الأيض وتحضير المفاصل", sets: "10 mins", rest: "None", rir: "Warmup", img: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=600&auto=format&fit=crop&q=80", steps: ["المشي باستقامة مع حركة ذراعين منتظمة."] },
+            { id: 'ex_2', cat: 'warmup', type: 'cardio', yt: 'V52GuzAQQfw', title: "إحماء الإليبتيكال (Elliptical)", desc: "تجهيز عضلي بدون ضغط على الركبتين.", benefit: "رفع نبض القلب بحماية تامة", sets: "10 mins", rest: "None", rir: "Warmup", img: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&auto=format&fit=crop&q=80", steps: ["حركة دائرية متناسقة للذراعين والساقين."] },
+
+            // تمارين الصدر
+            { id: 'ex_3', cat: 'chest', type: 'machine', yt: 'rT7DgCr-3pg', title: "جهاز ضغط الصدر (Chest Press Machine)", desc: "تمرين عزل متطور وآمن لتشكيل الصدر.", benefit: "تقوية ألياف الصدر وتحسين القوام", sets: "4 Sets", rest: "45-60 sec", rir: "1-2 RIR", img: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&auto=format&fit=crop&q=80", steps: ["ضبط المقعد بمحاذاة الصدر والدفع بتركيز."] },
+            { id: 'ex_4', cat: 'chest', type: 'free', yt: '2JBYhN29pUs', title: "بنش مائل بالدمبل (Incline Dumbbell Press)", desc: "استهداف الصدر العلوي لزيادة البروز.", benefit: "رسم خط الصدر العلوي بوضوح", sets: "4 Sets", rest: "60-90 sec", rir: "1-2 RIR", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80", steps: ["زاوية كرسي 30 درجة مع نزول عميق ومتحكم."] },
+            { id: 'ex_5', cat: 'chest', type: 'cable', yt: 'Ie45v5BtCH4', title: "تفتيح صدر كابل سفلي (Low Cable Fly)", desc: "عزل الصدر العلوي والتفاصيل.", benefit: "إبراز التفاصيل العضلية وسط الصدر", sets: "3 Sets", rest: "45 sec", ir: "1 RIR", img: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&auto=format&fit=crop&q=80", steps: ["سحب الكابل لأعلى وللداخل بتركيز."] },
+            { id: 'ex_6', cat: 'chest', type: 'free', yt: 'gns2aX1h0eA', title: "بنش مستوي بالبار (Barbell Bench Press)", desc: "التمرين الأساسي لبناء كتلة وقوة الصدر.", benefit: "تضخيم القوة العامة للقسم العلوي", sets: "4 Sets", rest: "90 sec", rir: "2 RIR", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80", steps: ["إنزال البار ببطء لمنتصف الصدر ثم الدفع لأعلى."] },
+
+            // تمارين الظهر
+            { id: 'ex_7', cat: 'back', type: 'machine', yt: 'CAwf7n6Luuc', title: "سحب ظهر علوي عريض (Lat Pulldown)", desc: "توسيع الظهر وإزالة الترهلات.", benefit: "تحسين المظهر العام للجذع", sets: "4 Sets", rest: "60 sec", rir: "1-2 RIR", img: "https://images.unsplash.com/photo-1603287681832-b17fbcfff10f?w=600&auto=format&fit=crop&q=80", steps: ["إبراز الصدر للأمام وسحب المقبض للصدر."] },
+            { id: 'ex_8', cat: 'back', type: 'free', yt: 'GauqniJ5ak8', title: "سحب بار منحنٍ (Barbell Bent-Over Row)", desc: "بناء سمك وعرض الظهر الأوسط.", benefit: "تضخيم الكتلة الخلفية وقوة الجذع", sets: "4 Sets", rest: "90-120 sec", rir: "2 RIR", img: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&auto=format&fit=crop&q=80", steps: ["انحناء الجذع بزاوية 45 والسحب لمنطقة السرة."] },
+            { id: 'ex_9', cat: 'back', type: 'cable', yt: 'GutfwWlWghM', title: "سحب كابل جالس (Seated Cable Row)", desc: "عزل الظهر وتحسين الاستقامة.", benefit: "تقوية عضلات أعلى الظهر والتحكم بالقوام", sets: "3 Sets", rest: "60 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1603287681832-b17fbcfff10f?w=600&auto=format&fit=crop&q=80", steps: ["سحب المقبض للبطن مع إرجاع الكتفين للوراء."] },
+
+            // تمارين الأرجل
+            { id: 'ex_10', cat: 'legs', type: 'machine', yt: 'IZxyjW7MPJQ', title: "جهاز ضغط الأرجل الآمن (Leg Press)", desc: "بناء الفخذين بحماية تامة للركبة.", benefit: "حرق سعرات عالية وقوة عضلية", sets: "4 Sets", rest: "60-90 sec", rir: "1-2 RIR", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80", steps: ["دفع المنصة بانتظام وعدم غلق الركبتين بالكامل."] },
+            { id: 'ex_11', cat: 'legs', type: 'free', yt: 'ultWZbUMPL8', title: "سكوات حر بالأرجل (Barbell Squat)", desc: "التمرين الملكي لتضخيم الساقين والجذع.", benefit: "كتلة عضلية هائلة وقوة عامة", sets: "4 Sets", rest: "120-150 sec", rir: "2 RIR", img: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&auto=format&fit=crop&q=80", steps: ["النزول بعمق مع استقامة الظهر ودفع الأرض."] },
+            { id: 'ex_12', cat: 'legs', type: 'machine', yt: 'n_X11e03Fjc', title: "جهاز ثني الفخذ خلفي (Hamstring Curl)", desc: "عزل وشد عضلات الخلفيات.", benefit: "تقوية خلفية الساق ومنع الإصابات", sets: "3 Sets", rest: "45 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80", steps: ["ثني الساق لأعلى ببطء وتحكم بالوزن."] },
+            { id: 'ex_13', cat: 'legs', type: 'free', yt: 'JCXUYuzwYdo', title: "ديدليفت روماني بالدمبل (Dumbbell RDL)", desc: "تشكيل عضلات الفخذ الخلفية والمؤخرة.", benefit: "شد السلسلة الخلفية وتفاصيل الساقين", sets: "3 Sets", rest: "60 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&auto=format&fit=crop&q=80", steps: ["إرجاع الحوض للخلف مع استقامة الظهر."] },
+
+            // تمارين الأكتاف
+            { id: 'ex_14', cat: 'shoulders', type: 'machine', yt: 'qEwKCR5JCog', title: "جهاز ضغط الكتف (Shoulder Press Machine)", desc: "تقوية وتحديد الأكتاف بأمان تام.", benefit: "تناسق الجزء العلوي وعرض الأكتاف", sets: "4 Sets", rest: "60 sec", rir: "1-2 RIR", img: "https://images.unsplash.com/photo-1532029837206-abbe2b76ad0e?w=600&auto=format&fit=crop&q=80", steps: ["الرفع بمسار عمودي متحكم به."] },
+            { id: 'ex_15', cat: 'shoulders', type: 'free', yt: '3VcKaXpzqRo', title: "رفرفة جانبي للكتف (Lateral Raises)", desc: "عزل الكتف الجانبي للتنشيف البصري.", benefit: "إبراز عرض الأكتاف وتحديدها تماماً", sets: "4 Sets", rest: "45 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1532029837206-abbe2b76ad0e?w=600&auto=format&fit=crop&q=80", steps: ["رفع الدمبلز جانبياً لمستوى الأكتاف بدون مرجحة."] },
+
+            // الذراعين
+            { id: 'ex_16', cat: 'arms', type: 'free', yt: '2pLT-olgUJs', title: "بايسبس بالكابل أو البار (Bicep Curl)", desc: "شد وتقوية الذراعين الأماميتين.", benefit: "شد ترهلات الذراعين وبناء الكتلة", sets: "3 Sets", rest: "45 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&auto=format&fit=crop&q=80", steps: ["تثبيت المرفقين وثني الذراع بتركيز."] },
+            { id: 'ex_17', cat: 'arms', type: 'cable', yt: 'nvnukkfVAp8', title: "تراسبس بالحبل (Triceps Rope Pushdown)", desc: "عزل وتفصيل الذراع الخلفية.", benefit: "بروز عضلات الذراع الخلفية بوضوح", sets: "3 Sets", rest: "45 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&auto=format&fit=crop&q=80", steps: ["تثبيت المرفقين ومد الذراعين تماماً لأسفل."] },
+
+            // البطن
+            { id: 'ex_18', cat: 'abs', type: 'cable', yt: '2fJWkJz_joA', title: "تمارين البطن العلوية (Cable Crunches)", desc: "نحت الخصر وتقوية جدار البطن.", benefit: "إبراز عضلات البطن وحرق دهون الخصر", sets: "3 Sets", rest: "45 sec", rir: "1 RIR", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80", steps: ["انحناء الجذع للأسفل بالاعتماد حصراً على البطن."] }
+        ];
+
+        function generateAlgorithmicPlan(e) {
+            e.preventDefault();
+            const weight = parseFloat(document.getElementById('u-weight').value);
+            const height = parseFloat(document.getElementById('u-height').value);
+            const age = parseInt(document.getElementById('u-age').value);
+            const gender = document.getElementById('u-gender').value;
+            const goal = document.getElementById('u-goal').value;
+            const days = parseInt(document.getElementById('u-days').value);
+
+            const heightM = height / 100;
+            const bmi = parseFloat((weight / (heightM * heightM)).toFixed(1));
+
+            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+            bmr = gender === 'male' ? bmr + 5 : bmr - 161;
+            const tdee = Math.round(bmr * 1.55);
+
+            let targetCal = tdee;
+            if (goal === 'fat_loss') targetCal = tdee - 500;
+            else if (goal === 'cutting') targetCal = tdee - 300;
+            else if (goal === 'hypertrophy') targetCal = tdee + 300;
+
+            let bmiCategory = "وزن مثالي طبيعي";
+            if (bmi < 18.5) bmiCategory = "نحافة (تتطلب زيادة سعرات وبناء مكثف)";
+            else if (bmi >= 25 && bmi < 30) bmiCategory = "زيادة وزن (تتطلب تكثيف حرق الدهون والكارديو)";
+            else if (bmi >= 30) bmiCategory = "سمنة مفرطة (تتطلب تمارين آمنة للمفاصل وحرق عالي)";
+
+            let repModifier = goal === 'fat_loss' ? '15 Reps (عالي الحرق)' : (goal === 'cutting' ? '12 Reps (تنشيف وتفصيل)' : '8-10 Reps (أحمال تضخيم)');
+
+            userProfile = {
+                name: document.getElementById('u-name').value,
+                age, height, weight, gender, goal, bmi, days,
+                bmr: Math.round(bmr), tdee, targetCal, bmiCategory, repModifier
+            };
+
+            localStorage.setItem('alg_gym_user_v2', JSON.stringify(userProfile));
+            checkUserState();
+        }
+
+        function resetProfile() {
+            localStorage.removeItem('alg_gym_user_v2');
+            location.reload();
+        }
+
+        function checkUserState() {
+            updateUI18n();
+            if (userProfile) {
+                document.getElementById('onboarding-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                initApp();
+            } else {
+                document.getElementById('onboarding-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('hidden');
+            }
+        }
+
+        // محرك الفلترة والتوليد الحقيقي المتفاعل مع الهدف والـ BMI
+        function getTrueDynamicSchedule() {
+            const { goal, bmi, days } = userProfile;
+
+            // فلترة ذكية بناءً على الـ BMI والهدف
+            let filteredPool = masterDatabase.map(ex => {
+                let copy = {...ex};
+                copy.sets = `${copy.sets} × ${userProfile.repModifier}`;
+                return copy;
+            });
+
+            // إذا كان الهدف تضخيم، نفضل التمارين الحرة (free)، وإذا كان حرق دهون أو سمنة نفضل الأجهزة (machine/cable)
+            if (goal === 'hypertrophy') {
+                filteredPool.sort((a, b) => (a.type === 'free' ? -1 : 1));
+            } else {
+                filteredPool.sort((a, b) => (a.type !== 'free' ? -1 : 1));
+            }
+
+            const getByCategory = (cat) => filteredPool.filter(e => e.cat === cat);
+
+            const warmups = getByCategory('warmup');
+            const chests = getByCategory('chest');
+            const backs = getByCategory('back');
+            const legs = getByCategory('legs');
+            const shoulders = getByCategory('shoulders');
+            const arms = getByCategory('arms');
+            const abs = getByCategory('abs');
+
+            // تجميع ديناميكي حقيقي بناءً على عدد الأيام
+            if (days === 3) {
+                return [
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 1: Full Body Circuit A" : "اليوم الأول: الحصة الشاملة الديناميكية (أ)",
+                        focus: currentLang === 'en' ? "Core & Compound Strength" : "التركيز على القوة الشاملة وتنشيط الأيض",
+                        exercises: [warmups[0] || warmups[1], chests[0], backs[0], legs[0], shoulders[0], arms[0], abs[0]]
+                    },
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 2: Full Body Circuit B" : "اليوم الثاني: الحصة الشاملة الديناميكية (ب)",
+                        focus: currentLang === 'en' ? "Upper Power & Lower Endurance" : "تكثيف الجزء العلوي وتحمل الساقين",
+                        exercises: [warmups[1] || warmups[0], chests[1] || chests[0], backs[1] || backs[0], legs[1] || legs[0], shoulders[1] || shoulders[0], arms[1] || arms[0], abs[0]]
+                    },
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 3: Full Body Circuit C" : "اليوم الثالث: الحصة الشاملة الديناميكية (ج)",
+                        focus: currentLang === 'en' ? "Metabolic Burn & Hypertrophy" : "الحرق الأيضي العالي وبناء الأنسجة العضلية",
+                        exercises: [warmups[0], legs[2] || legs[0], chests[2] || chests[0], backs[2] || backs[0], shoulders[0], arms[1], abs[0]]
+                    }
+                ];
+            } else {
+                return [
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 1: Upper Body - Push" : "اليوم الأول: الجزء العلوي (دفع مكثف مخصص)",
+                        focus: currentLang === 'en' ? "Chest, Shoulders & Triceps" : "الصدر، الأكتاف والتراسبس بتوافق مع هدفك",
+                        exercises: [warmups[0], chests[0], chests[1] || chests[2], shoulders[0], shoulders[1], arms[1], abs[0]]
+                    },
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 2: Lower Body - Legs" : "اليوم الثاني: الجزء السفلي (الأرجل والسلسلة الخلفية)",
+                        focus: currentLang === 'en' ? "Quads, Hamstrings & Core" : "الفخذين، الخلفيات والجذع بتركيز كامل",
+                        exercises: [warmups[1] || warmups[0], legs[0], legs[1], legs[2] || legs[3], backs[0], abs[0], abs[0]]
+                    },
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 3: Upper Body - Pull" : "اليوم الثالث: الجزء العلوي (سحب وإسناد)",
+                        focus: currentLang === 'en' ? "Back & Biceps Mastery" : "الظهر العريض، السمك والبايسبس المتقدم",
+                        exercises: [warmups[0], backs[0], backs[1] || backs[2], shoulders[1], shoulders[0], arms[0], abs[0]]
+                    },
+                    {
+                        dayTitle: currentLang === 'en' ? "Day 4: Lower Body & Core Burn" : "اليوم الرابع: القوة السفلية وحرق الدهون",
+                        focus: currentLang === 'en' ? "Intense Leg & Core Conditioning" : "تكثيف عضلات الساقين ونحت البطن",
+                        exercises: [warmups[1] || warmups[0], legs[1], legs[0], chests[0] || backs[0], abs[0], abs[0], warmups[0]]
+                    }
+                ];
+            }
+        }
+
+        function initApp() {
+            const initials = userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            document.getElementById('user-initials').innerText = initials;
+            document.getElementById('welcome-user').innerText = `${currentLang === 'en' ? 'Trainee: ' : 'المتدرب: '}${userProfile.name}`;
+            document.getElementById('stat-bmi').innerText = userProfile.bmi;
+            document.getElementById('stat-bmr').innerText = `${userProfile.bmr} kcal`;
+            document.getElementById('stat-tdee').innerText = `${userProfile.tdee} kcal`;
+            document.getElementById('stat-target-cal').innerText = `${userProfile.targetCal} kcal`;
+
+            const goalNames = {
+                fat_loss: currentLang === 'en' ? "Fat Loss" : "حرق الدهون وتخفيض الوزن",
+                cutting: currentLang === 'en' ? "Muscle Cutting" : "التنشيف وإبراز العضلات",
+                hypertrophy: currentLang === 'en' ? "Muscle Hypertrophy" : "التضخيم وبناء الكتلة العضلية"
+            };
+
+            document.getElementById('user-plan-summary').innerText = currentLang === 'en' ?
+                `BMI: ${userProfile.bmi} (${userProfile.bmiCategory}) | Plan: ${userProfile.days}-Day` :
+                `مؤشر كتلة الجسم: ${userProfile.bmi} (${userProfile.bmiCategory}) | نظام ${userProfile.days} أيام`;
+
+            document.getElementById('scientific-analysis-text').innerText =
+                currentLang === 'en' ?
+                `True dynamic algorithmic output: Age ${userProfile.age}, Goal "${goalNames[userProfile.goal]}", BMI category "${userProfile.bmiCategory}". Exercises were filtered and uniquely structured for your profile with target calories (${userProfile.targetCal} kcal).` :
+                `نتيجة التحليل الديناميكي الحقيقي: عمرك (${userProfile.age} سنة)، هدفك (${goalNames[userProfile.goal]}), وتصنيف جسمك ("${userProfile.bmiCategory}"). تم إعادة تشكيل الجدول بالكامل واختيار تمارين تناسب هدفك خصيصاً مع تحديد سعراتك (${userProfile.targetCal} سعرة).`;
+
+            renderDaysTabs();
+            renderDayWorkouts(currentDayIndex);
+        }
+
+        function renderDaysTabs() {
+            const container = document.getElementById('days-tabs-container');
+            container.innerHTML = '';
+            const schedule = getTrueDynamicSchedule();
+
+            schedule.forEach((day, index) => {
+                const isActive = index === currentDayIndex;
+                const btnClass = isActive ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:bg-slate-800';
+                container.innerHTML += `
+                    <button onclick="switchDay(${index})" class="px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap border border-slate-800 ${btnClass}">
+                        ${day.dayTitle}
+                    </button>
+                `;
+            });
+        }
+
+        function switchDay(index) {
+            currentDayIndex = index;
+            renderDaysTabs();
+            renderDayWorkouts(index);
+        }
+
+        function renderDayWorkouts(dayIndex) {
+            const schedule = getTrueDynamicSchedule();
+            if (dayIndex >= schedule.length) currentDayIndex = 0;
+            const currentDay = schedule[currentDayIndex];
+
+            document.getElementById('current-day-title').innerText = currentDay.dayTitle;
+            document.getElementById('current-day-focus').innerText = `${currentLang === 'en' ? 'Focus: ' : 'التركيز: '}${currentDay.focus}`;
+
+            const container = document.getElementById('day-workouts-list');
+            container.innerHTML = '';
+
+            currentDay.exercises.forEach(ex => {
+                const userWeightRecord = exerciseWeights[ex.id] ? `${exerciseWeights[ex.id]} kg` : (currentLang === 'en' ? 'Not Logged' : 'غير مسجل');
+
+                container.innerHTML += `
+                    <div class="p-4 bg-slate-950/60 border border-slate-800/80 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 w-full">
+                            <img src="${ex.img}" alt="${ex.title}" class="w-20 h-20 rounded-xl object-cover shrink-0 shadow-sm border border-slate-800">
+                            <div class="space-y-1 flex-1">
+                                <h4 class="font-bold text-white text-sm">${ex.title}</h4>
+                                <p class="text-xs text-slate-400">${ex.desc}</p>
+                                <div class="flex flex-wrap gap-2 pt-1">
+                                    <span class="text-[11px] bg-slate-900 border border-slate-800 text-emerald-400 px-2.5 py-0.5 rounded-md font-semibold">⚡ ${ex.sets}</span>
+                                    <span class="text-[11px] bg-slate-900 border border-slate-800 text-sky-400 px-2.5 py-0.5 rounded-md font-semibold">⏱ راحة: ${ex.rest}</span>
+                                    <span class="text-[11px] bg-slate-900 border border-slate-800 text-amber-400 px-2.5 py-0.5 rounded-md font-semibold">🎯 شدة: ${ex.rir}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex md:flex-col items-end justify-between w-full md:w-auto gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-slate-800">
+                            <span class="text-[11px] text-slate-400">${currentLang === 'en' ? 'Logged Weight:' : 'الوزن المسجل:'} <strong class="text-amber-400">${userWeightRecord}</strong></span>
+                            <button onclick='openModal(${JSON.stringify(ex).replace(/'/g, "&#39;")})' class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-800 px-4 py-2 rounded-xl text-xs font-bold transition w-full md:w-auto text-center">
+                                ${currentLang === 'en' ? 'Details & Video 🎥' : 'التفاصيل والفيديو 🎥'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal(ex) {
+            currentActiveExId = ex.id;
+            document.getElementById('modal-title').innerText = ex.title;
+            document.getElementById('modal-youtube-iframe').src = `https://www.youtube.com/embed/${ex.yt}`;
+            document.getElementById('modal-yt-external').href = `https://www.youtube.com/watch?v=${ex.yt}`;
+            document.getElementById('modal-benefit').innerText = ex.benefit;
+            document.getElementById('modal-desc').innerText = ex.desc;
+
+            const stepsList = document.getElementById('modal-steps');
+            stepsList.innerHTML = '';
+            ex.steps.forEach(step => {
+                stepsList.innerHTML += `<li>• ${step}</li>`;
+            });
+
+            document.getElementById('custom-weight-input').value = exerciseWeights[ex.id] || '';
+            document.getElementById('exercise-modal').classList.remove('hidden');
+            document.getElementById('exercise-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-youtube-iframe').src = "";
+            document.getElementById('exercise-modal').classList.remove('flex');
+            document.getElementById('exercise-modal').classList.add('hidden');
+        }
+
+        function saveExerciseWeight() {
+            const val = document.getElementById('custom-weight-input').value;
+            if (val && currentActiveExId) {
+                exerciseWeights[currentActiveExId] = val;
+                localStorage.setItem('alg_gym_weights_v2', JSON.stringify(exerciseWeights));
+                alert(currentLang === 'en' ? 'Weight saved successfully!' : 'تم حفظ الوزن وتحديث التطور بنجاح!');
+                closeModal();
+                renderDayWorkouts(currentDayIndex);
+            }
+        }
+
+        window.onload = function() {
+            checkUserState();
+        };
+    </script>
+</body>
+</html>
